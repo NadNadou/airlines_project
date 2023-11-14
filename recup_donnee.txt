@@ -1,0 +1,136 @@
+from flask import Flask, jsonify, request
+import requests
+from utils.secret import *
+import pandas as pd
+from IPython.display import display
+#app = Flask(__name__)
+# fonction pour la recuperation token--------------------------------------
+def get_access_token():
+    url_token = 'https://api.lufthansa.com/v1/oauth/token'
+    payload = {
+        "grant_type": "client_credentials",
+        "client_id": client_id,
+        "client_secret": client_secret
+    }
+    response = requests.post(url_token, data=payload)
+    if response.status_code == 200:
+        return response.json().get("access_token")
+    else:
+        return jsonify({"error": "Impossible d'obtenir le token d'accès"}), 500
+
+
+#@app.route('/<info>', methods=['GET'])
+#fonction pour acceder à l'API lufthansa pour recuperer les donées (country,city,airport .....) 
+def get_filght_data(info):
+    access_token = get_access_token()
+    url = f"https://api.lufthansa.com/v1/mds-references/{info}"
+    headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/json"
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        return jsonify({"error": "Failed to fetch data"}), 500
+    
+
+#fonction pour traiter la partie name du fichier json pour recuperer les noms 
+def recup_name(donne_json):
+    list_name=[]
+    for ele in donne_json:
+        if isinstance(ele['Names']['Name'],list):
+            list_name.append(ele['Names']['Name'][0]['$'] )
+        else:
+            list_name.append(ele['Names']['Name']['$'])
+    return list_name
+
+#---------------------recueration city puis transformation en dataframe -----------------------
+x='cities'
+donne=get_filght_data(x)
+#1)recuperer donne utile json
+tab_data =donne['CityResource']['Cities']['City']
+#2)transformation en dataframe----
+#transformer ces donne en data frame 
+df_city = pd.json_normalize(tab_data)
+#affiner la data frame (recuperer les colonne bien transoformé) 
+df_city=df_city[['CityCode', 'CountryCode', 'UtcOffset', 'TimeZoneId', 
+       'Airports.AirportCode',]].rename(columns={'Airports.AirportCode':'AirportCode'})
+#traitement speciale pour la recupertion  city name
+df_city['City_name']=recup_name(tab_data)
+df_city
+
+#-----------------recupertion countrie puis transformation en dataframe ------------------------------
+x='countries'
+donne=get_filght_data(x)
+#1)recuperer donne utile json
+tab_data =donne['CountryResource']['Countries']['Country']
+#2)trnasformation en dataframe 
+#transformation direct 
+df_country=pd.json_normalize(tab_data)
+df_country=df_country['CountryCode']
+df_country = df_country.to_frame()  #pour pouvoir concatener une colonne à une autre il faut la transformer en frame 
+#traitement special pour recupere country_name 
+df_country['Country_name']=recup_name(tab_data)
+df_country
+
+#----------------------RECUPERATION AEROPORT----------------------------------
+x='airports'
+donne=get_filght_data(x)
+#1)recuperer donne utile json
+tab_data =donne['AirportResource']['Airports']['Airport']
+#2)trnasformation en dataframe 
+#transformation direct 
+df_airport=pd.json_normalize(tab_data)
+df_airport=df_airport[['AirportCode', 'CityCode', 'CountryCode', 'LocationType', 'UtcOffset',
+                       'TimeZoneId', 'Position.Coordinate.Latitude',
+                        'Position.Coordinate.Longitude']].rename(columns={'Position.Coordinate.Latitude':'Latitude',
+                                                                          'Position.Coordinate.Longitude':'Longitude'})
+# #traitement special pour recupere country_name 
+df_airport['Airport_name']=recup_name(tab_data)
+df_airport
+
+#--------------------------recuperation airlines-----------------------------
+x='airlines'
+donne=get_filght_data(x)
+#1)recuperer donne utile json
+tab_data =donne['AirlineResource']['Airlines']['Airline']
+#2)trnasformation en dataframe 
+#transformation direct 
+df_airline=pd.json_normalize(tab_data)
+df_airline=df_airline[['AirlineID', 'AirlineID_ICAO',
+                       'Names.Name.$']].rename(columns={'Names.Name.$':'Airline_name'})
+df_airline
+
+#------------recuperation  aircraft ------------------------------------
+x='aircraft'
+donne=get_filght_data(x)
+#1)recuperer donne utile json
+tab_data =donne['AircraftResource']['AircraftSummaries']['AircraftSummary']
+#2)trnasformation en dataframe 
+#transformation direct 
+df_aircraft=pd.json_normalize(tab_data)
+df_aircraft=df_aircraft[['AircraftCode', 'AirlineEquipCode', 
+                         'Names.Name.$']].rename(columns={'Names.Name.$':'Aircraft_name'})
+df_aircraft
+
+
+
+
+
+
+
+
+
+
+
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+
+
+
+
