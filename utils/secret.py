@@ -1,4 +1,4 @@
-import os,pymongo,ssl
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -13,4 +13,5 @@ limit_request = 100
 uri_mongo= os.getenv("URI_MONGO_DB")
 client=pymongo.MongoClient(uri_mongo,ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
 db_mongo=client[os.getenv("DB_NAME")]
-user_type= os.getenv("USER_MONGO_DB")
+
+
