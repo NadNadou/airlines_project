@@ -24,7 +24,10 @@ def get_access_token():
         print(f"An error occured : {str(e)}")
         return None
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d6138f2 (update schedule part)
 
 def all_countries():
     access_token = get_access_token()
@@ -67,8 +70,7 @@ def all_countries():
             else:
                 return {"error": f"Error {response.status_code}: {response.text}"}
     else:
-        return {"error": "Access token error"}
-    
+        return {"error": "Access token error"}   
     
 def all_cities():
     access_token = get_access_token()
@@ -237,12 +239,12 @@ def all_schedules(origin,destination,date):
             "Accept": "application/json"
         }
        
-        #Variable settings        
+        # # Variable settings   
         # origin = 'FRA'
         # destination = 'JFK'
-        # date = '2024-03-08'
+        # date = '2014-05-01'
         
-        url = f"{baseURL}operations/schedules/{origin}/{destination}/{date}"         
+        url = f"{baseURL}operations/schedules/{origin}/{destination}/{date}"
         print(url)
         print(type(origin))
         
@@ -259,5 +261,3 @@ def all_schedules(origin,destination,date):
             return {"error": f"Error {response.status_code}: {response.text}"}
     else:
         return {"error": "Access token error"}
-
-      

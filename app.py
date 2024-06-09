@@ -62,13 +62,16 @@ def post_schedule():
     date = request.args.get('date')
     
     # Format de la requête :
-    # localhost:5000/schedule?destination=JFK&origin=FRA&date=2024-03-08
+    # localhost:5000/schedule?destination=JFK&origin=FRA&date=2024-05-08
     
     if not all([destination, origin, date]):
         return jsonify({"error": "Missing parameters"}), 400
 
     schedule = all_schedules(destination=destination, origin=origin, date=date)
     
+    for item in schedule:
+        create_item_one(item, 'flights')
+
     if isinstance(schedule, dict) and "error" in schedule:
        return jsonify(schedule), 500
     
@@ -82,6 +85,7 @@ def post_references():
     create_item(all_cities(),'cities')
     create_item(all_airlines(),'airlines')
     create_item(all_countries(),'countries')
+
     
     return "OK", 200
 
