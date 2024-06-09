@@ -24,13 +24,6 @@ def get_access_token():
         print(f"An error occured : {str(e)}")
         return None
 
-#GET an acces token
-def get_token():
-    access_token = get_access_token()
-    if access_token:
-        return access_token
-    else:
-        return {"error": "Impossible d'obtenir le token d'accès"}
 
 
 def all_countries():
