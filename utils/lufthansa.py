@@ -24,11 +24,6 @@ def get_access_token():
         print(f"An error occured : {str(e)}")
         return None
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d6138f2 (update schedule part)
-
 def all_countries():
     access_token = get_access_token()
     if access_token:

@@ -1,10 +1,66 @@
 from flask import Flask,jsonify,request
 from utils.secret import *
-
 from utils.lufthansa import *
 from utils.mongo import *
 
+import dash 
+import dash_core_components as dcc
+import dash_html_components as html
+import dash_table
+
+
 app = Flask(__name__)
+
+# Dash application
+dash_app = dash.Dash(__name__, server=app, url_base_pathname='/dash/')
+
+
+# Récupérez les données de la collection 'airports'
+data = get_data_from_mongo('airports')
+
+# Préparez les données pour le tableau
+# if data:
+#     table_data = [
+#         {key: value for key, value in item.items() if key != '_id'}  # Exclure le champ '_id'
+#         for item in data
+#     ]
+#     columns = [{"name": i, "id": i} for i in table_data[0].keys()]
+# else:
+#     table_data = []
+#     columns = []
+    
+    
+# # Définir la mise en page de l'application Dash
+# dash_app.layout = html.Div(children=[
+#     html.H1(children='Airports Data from MongoDB'),
+
+#     dash_table.DataTable(
+#         id='table',
+#         columns=columns,
+#         data=table_data,
+#     )
+# ])
+
+# Layout de l'application Dash
+dash_app.layout = html.Div(children=[
+    html.H1(children='Hello Dash'),
+    html.Div(children='''
+        Dash: A web application framework for Python.
+    '''),
+    dcc.Graph(
+        id='example-graph',
+        figure={
+            'data': [
+                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': 'Montréal'},
+            ],
+            'layout': {
+                'title': 'Dash Data Visualization'
+            }
+        }
+    )
+])
+
 
 #GET all countries
 @app.route('/countries', methods=['GET'])
@@ -23,7 +79,7 @@ def get_countries():
 
 @app.route('/cities', methods=['GET'])
 def get_cities():
-    cities = get_cities()
+    cities = all_cities()
     
     # Vérifier si le résultat est une erreur
     if isinstance(cities, dict) and "error" in cities:
@@ -80,7 +136,6 @@ def post_schedule():
 #POST ref data
 @app.route('/references', methods=['POST'])
 def post_references():
-    
     create_item(all_airports(),'airports')
     create_item(all_cities(),'cities')
     create_item(all_airlines(),'airlines')
