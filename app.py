@@ -3,20 +3,20 @@ from utils.secret import *
 from utils.lufthansa import *
 from utils.mongo import *
 
-import dash 
-import dash_core_components as dcc
-import dash_html_components as html
-import dash_table
+# import dash 
+# import dash_core_components as dcc
+# import dash_html_components as html
+# import dash_table
 
 
 app = Flask(__name__)
 
 # Dash application
-dash_app = dash.Dash(__name__, server=app, url_base_pathname='/dash/')
+# dash_app = dash.Dash(__name__, server=app, url_base_pathname='/dash/')
 
 
 # Récupérez les données de la collection 'airports'
-data = get_data_from_mongo('airports')
+# data = get_data_from_mongo('airports')
 
 # Préparez les données pour le tableau
 # if data:
@@ -42,24 +42,24 @@ data = get_data_from_mongo('airports')
 # ])
 
 # Layout de l'application Dash
-dash_app.layout = html.Div(children=[
-    html.H1(children='Hello Dash'),
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-    dcc.Graph(
-        id='example-graph',
-        figure={
-            'data': [
-                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': 'Montréal'},
-            ],
-            'layout': {
-                'title': 'Dash Data Visualization'
-            }
-        }
-    )
-])
+# dash_app.layout = html.Div(children=[
+#     html.H1(children='Hello Dash'),
+#     html.Div(children='''
+#         Dash: A web application framework for Python.
+#     '''),
+#     dcc.Graph(
+#         id='example-graph',
+#         figure={
+#             'data': [
+#                 {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+#                 {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': 'Montréal'},
+#             ],
+#             'layout': {
+#                 'title': 'Dash Data Visualization'
+#             }
+#         }
+#     )
+# ])
 
 
 #GET all countries
@@ -124,6 +124,7 @@ def post_schedule():
         return jsonify({"error": "Missing parameters"}), 400
 
     schedule = all_schedules(destination=destination, origin=origin, date=date)
+    
     
     for item in schedule:
         create_item_one(item, 'flights')

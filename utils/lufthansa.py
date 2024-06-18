@@ -238,6 +238,7 @@ def all_schedules(origin,destination,date):
         # origin = 'FRA'
         # destination = 'JFK'
         # date = '2014-05-01'
+    
         
         url = f"{baseURL}operations/schedules/{origin}/{destination}/{date}"
         print(url)

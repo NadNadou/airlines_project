@@ -1,4 +1,4 @@
-from dash import Dash, dcc, html
+from dashboard import Dash, dcc, html
 import dash_table
 from utils.secret import db_mongo
 from utils.mongo import get_data_from_mongo
