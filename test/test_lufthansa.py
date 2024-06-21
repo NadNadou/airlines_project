@@ -1,5 +1,5 @@
 import pytest
-from utils.lufthansa import all_countries ,all_airports
+from ..utils.lufthansa import * 
 
 def test_all_countries():
 

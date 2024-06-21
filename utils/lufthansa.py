@@ -237,10 +237,6 @@ def all_schedules(origin,destination,date):
             "Accept": "application/json"
         }
        
-        #Variable settings        
-        # origin = 'FRA'
-        # destination = 'JFK'
-        # date = '2024-03-08'
         
         url = f"{baseURL}operations/schedules/{origin}/{destination}/{date}"         
         print(url)

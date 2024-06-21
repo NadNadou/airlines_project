@@ -69,9 +69,10 @@ def post_schedule():
 
     schedule = all_schedules(destination=destination, origin=origin, date=date)
     
+    
     if isinstance(schedule, dict) and "error" in schedule:
        return jsonify(schedule), 500
-    
+    create_item_flight(schedule, 'flights')
     return jsonify(schedule), 200
 
 #POST ref data
@@ -86,4 +87,4 @@ def post_references():
     return "OK", 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+     app.run(host='0.0.0.0', port=8000)
