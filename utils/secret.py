@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 import os, pymongo,ssl 
+=======
+import ssl
+import pymongo 
+import os
+>>>>>>> origin/badr
 from dotenv import load_dotenv
 
 

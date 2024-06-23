@@ -1,3 +1,4 @@
+from datetime import datetime ,timezone
 from utils.secret import *
 import pandas as pd
 
@@ -15,8 +16,13 @@ def convert_to_mongo_compatible(data):
         return data
 
 def create_item(data, collection_name):
-    collection=db_mongo[collection_name]
-    result= collection.insert_many(data)
+    time = datetime.now(timezone.utc)
+    for ele in data:
+        ele['insert_at'] = time.strftime('%Y-%m-%d %H:%M')
+
+    collection = db_mongo[collection_name]
+    #result = collection.delete_many({})
+    result = collection.insert_many(data)
     
     print(f"Inserted IDs: {result.inserted_ids}")
       

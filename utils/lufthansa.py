@@ -238,11 +238,14 @@ def all_schedules(origin,destination,date):
             "Accept": "application/json"
         }
        
+<<<<<<< HEAD
         # # Variable settings   
         # origin = 'FRA'
         # destination = 'JFK'
         # date = '2014-05-01'
     
+=======
+>>>>>>> origin/badr
         
         url = f"{baseURL}operations/schedules/{origin}/{destination}/{date}"
         print(url)
