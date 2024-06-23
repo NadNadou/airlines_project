@@ -15,10 +15,11 @@ def get_access_token():
 
     try:
         response = requests.post(url_token, data=payload, headers=headers)
-
+        
         if response.status_code == 200:
             return response.json().get("access_token")
         else:
+            print(response.json())
             return None
     except Exception as e:
         print(f"An error occured : {str(e)}")
@@ -135,6 +136,7 @@ def all_airports():
                 data = response.json()
 
                 airports = data.get("AirportResource", []).get("Airports",[]).get("Airport",[])
+                
 
                 for item in airports:
                     airport_code=item.get("AirportCode")
@@ -163,6 +165,8 @@ def all_airports():
                         }
                     
                     result.append(airport_data)
+                    
+                print(len(airports))
                     
                 if len(airports) < limit_request:  # Sortir de la boucle si le dernier lot de pays est moins que la limite
                     break

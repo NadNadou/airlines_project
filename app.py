@@ -5,6 +5,18 @@ from utils.mongo import *
 
 app = Flask(__name__)
 
+#Check token
+@app.route('/', methods=['GET'])
+def get_check_token():
+    token = get_access_token()
+    # Vérifier si le résultat est une erreur
+    # Si 'countries' est un dictionnaire et contient
+    # une clé 'error', retourne une erreur 500
+    
+    print(token)
+    
+    # Si pas d'erreur, renvoyer les données avec le code 200
+    return jsonify(token), 200
 
 #GET all countries
 @app.route('/countries', methods=['GET'])
