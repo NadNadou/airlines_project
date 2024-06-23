@@ -82,15 +82,12 @@ def post_schedule():
     schedule = all_schedules(destination=destination, origin=origin, date=date)
     
     
-<<<<<<< HEAD
     for item in schedule:
         create_item_one(item, 'flights')
-
-=======
->>>>>>> origin/badr
+        
     if isinstance(schedule, dict) and "error" in schedule:
        return jsonify(schedule), 500
-    create_item_flight(schedule, 'flights')
+    # create_item_flight(schedule, 'flights')
     return jsonify(schedule), 200
 
 #POST ref data
