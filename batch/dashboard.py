@@ -47,6 +47,7 @@ app.layout = html.Div([
                 value=''
             )
         ], className='element col-lg-6'),
+        
          html.Div([
             html.Label('Départ', className='label'),
             html.Br(),
@@ -54,7 +55,8 @@ app.layout = html.Div([
                 id='depart-date',
                 placeholder='Ajouter une date',
                 min_date_allowed=min_date,
-                max_date_allowed=max_date
+                max_date_allowed=max_date,
+                display_format='DD/MM/YYYY'
             )
         ], className='element col-lg-6'),
 
@@ -65,8 +67,10 @@ app.layout = html.Div([
                 id='return-date',
                 placeholder='Ajouter une date',
                 min_date_allowed=min_date,
-                max_date_allowed=max_date
+                max_date_allowed=max_date,
+                display_format='DD/MM/YYYY'
             )
+            
         ], className='element col-lg-6'),
 
        
