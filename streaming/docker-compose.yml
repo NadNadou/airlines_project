@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -31,8 +30,8 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092, PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
@@ -50,10 +49,10 @@ services:
     networks:
       - datascientest
     healthcheck:
-      test: ['CMD', 'bash', '-c', "nc -z localhost 9092"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ['CMD', 'kafka-topics', '--bootstrap-server', 'localhost:9092', '--list']
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   mongodb:
     image: mongo:latest
@@ -61,6 +60,11 @@ services:
       - "27017:27017"
     networks:
       - datascientest
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   dash-app:
     build:
@@ -69,7 +73,8 @@ services:
     ports:
       - "8050:8050"
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
     networks:
@@ -80,7 +85,8 @@ services:
       context: .
       dockerfile: Iot_Data_Producer/Dockerfile
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
     networks:
@@ -91,8 +97,10 @@ services:
       context: .
       dockerfile: kafka_consumer_to_mongodb/Dockerfile
     depends_on:
-      - broker
-      - mongodb
+      broker:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MONGO_URI=mongodb://mongodb:27017
@@ -101,3 +109,4 @@ services:
 
 networks:
   datascientest:
+    driver: bridge
