@@ -1,5 +1,7 @@
-**Projet de Suivi des Vols en Temps Réel
-**
+**Projet de Suivi des Vols en Temps Réel**
+
+
+
 **Description**
 Ce projet vise à suivre les vols en temps réel en utilisant les données fournies par l'API Lufthansa et les systèmes IoT des avions. L'architecture de l'application combine le traitement par lots et le traitement en streaming pour une gestion efficace et une visualisation interactive des données aéronautiques.
 
